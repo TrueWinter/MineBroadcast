@@ -21,3 +21,7 @@ Allows server staff to receive messages when certain blocks are broken. These me
 - `mb.commands.reload`: Required to use the reload command
 
 ![Preview](img/mb-preview.png)
+
+## Old Releases
+
+Looking for old releases? They can be found at the old fork repository, located at [https://github.com/TrueWinter/MineBroadcast-Old](https://github.com/TrueWinter/MineBroadcast-Old).
