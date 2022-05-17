@@ -1,53 +1,166 @@
-# A list of the ores which will be broadcasted when found.
-ores:
-    - coal
-    - iron
-    - gold
-    - lapis
-    - redstone
-    - quartz
-    - diamond
-    - emerald
-
-# The colors to use to color the ores in the broadcast message.
-# See the end of the file for a list of available colors.
-colors:
-    coal: dark_gray
-    iron: gray
-    gold: yellow
-    lapis: dark_blue
-    redstone: red
-    quartz: white
-    diamond: aqua
-    emerald: green
+# A list of the blocks which will be broadcast when found.
+# Example:
+# coal_ore:
+#   color: dark_grey
+#   name: coal
+#   counting: true
+#   alertAfter: 100
+#
+# Material name ("coal_ore" in the above example)
+# and color will be converted to uppercase automatically.
+# If the material name is invalid, it will be skipped.
+# If the color is invalid, it will be reset to white.
+# A warning is sent in console in both cases.
+#
+# The name field is arbitrary. This value will be shown in place of
+# the material name when a block is mined.
+#
+# Counting and alertAfter options are part of the experimental MiningMonitor.
+# If the counting option is true (and the alertAfter option is valid),
+# the MiningMonitor will keep track of blocks mined and send alerts if a player
+# mines more than the alertAfter value over a 5 minute period. These alerts will
+# include the time since the 5 minute timer was last reset. Note that the 5 minute
+# timer currently applies for the whole server, not per player.
+#
+# IMPORTANT: All alertAfter values default to 100. Therefore, if you want to use
+# this feature, you must replace these with your own numbers (calculating the
+# average blocks over a 5 minute period). In the future, I may research this further
+# and add better default values.
+#
+# All fields are required. Disabling a feature may require a server restart to be effective.
+#
+# See the following links for valid options:
+# Material: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# Color: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html
+blocks:
+  coal_ore:
+    color: dark_gray
+    name: coal
+    counting: true
+    alertAfter: 100
+  iron_ore:
+    color: gray
+    name: iron
+    counting: true
+    alertAfter: 100
+  gold_ore:
+    color: yellow
+    name: gold
+    counting: true
+    alertAfter: 100
+  lapis_ore:
+    color: dark_blue
+    name: lapis
+    counting: true
+    alertAfter: 100
+  redstone_ore:
+    color: red
+    name: redstone
+    counting: true
+    alertAfter: 100
+  diamond_ore:
+    color: aqua
+    name: diamond
+    counting: true
+    alertAfter: 100
+  emerald_ore:
+    color: green
+    name: emerald
+    counting: true
+    alertAfter: 100
+  copper_ore:
+    color: gold
+    name: copper
+    counting: true
+    alertAfter: 100
+  nether_gold_ore:
+    color: yellow
+    name: nether gold
+    counting: true
+    alertAfter: 100
+  nether_quartz_ore:
+    color: white
+    name: quartz
+    counting: true
+    alertAfter: 100
+  ancient_debris:
+    color: red
+    name: ancient debris
+    counting: true
+    alertAfter: 100
+  gilded_blackstone:
+    color: gold
+    name: gilded blackstone
+    counting: true
+    alertAfter: 100
+  deepslate_coal_ore:
+    color: dark_gray
+    name: deepslate coal
+    counting: true
+    alertAfter: 100
+  deepslate_iron_ore:
+    color: gray
+    name: deepslate iron
+    counting: true
+    alertAfter: 100
+  deepslate_gold_ore:
+    color: yellow
+    name: deepslate gold
+    counting: true
+    alertAfter: 100
+  deepslate_lapis_ore:
+    color: dark_blue
+    name: deepslate lapis
+    counting: true
+    alertAfter: 100
+  deepslate_redstone_ore:
+    color: red
+    name: deepslate redstone
+    counting: true
+    alertAfter: 100
+  deepslate_diamond_ore:
+    color: aqua
+    name: deepslate diamond
+    counting: true
+    alertAfter: 100
+  deepslate_emerald_ore:
+    color: green
+    name: deepslate emerald
+    counting: true
+    alertAfter: 100
+  deepslate_copper_ore:
+    color: gold
+    name: deepslate copper
+    counting: true
+    alertAfter: 100
 
 # The message to be broadcasted (you can use the tags {player_name}, {real_player_name},
-# {count}, {plural}, {ore}, {ore_color} and {world}).
+# {count}, {plural}, {block}, {block_color} and {world}).
 # Notes:
 # + You can use colors by using &colorcode (See the end of the file for a list of available color codes).
-# + The {ore} tag will be replaced by {ore_color}{ore}.
+# + The {block} tag will be replaced by {block_color}{block}.
 # + The "player_name" tag is the name of the player as it is set by different plugins,
 #   "real_player_name" is the real pseudo of the player.
-message: "&l{player_name}&r just found &l{count}&r block{plural} of [&l&k{ore}&r]"
+message: "&l{player_name}&r just found &l{count}&r block{plural} of [&l&k{block}&r]"
+
+# This message will be sent if a player finds more than the configured alertAfter value within 5 minutes
+# Tags are the same as the message option above, with the addition of {time} which will be replaced with
+# the difference between the current time, and the last time the timer was reset
+alertMessage: "&l{player_name}&r has found &l{count}&r block{plural} of [&l&k{block}&r] in the past {time}"
+
+# If a user mines in a certain direction for at least 5 blocks, then changes mining direction and finds a
+# monitored block within 50 blocks, and does this 3 times, this alert will be sent.
+# Available tags: {player_name}, {real_player_name}, {world}
+suspiciousMiningMonitorEnabled: true
+suspiciousMiningAlertMessage: "&l{player_name}&r has found monitored blocks after changing direction while mining 3 times"
 
 # The text to add when more than one ore is found (Will be used to replace the {plural} tag).
 plural: s
 
-# The ore translations to use in the messages.
-ore-translations:
-    coal: coal
-    iron: iron
-    gold: gold
-    lapis: lapis
-    redstone: redstone
-    quartz: quartz
-    diamond: diamond
-    emerald: emerald
-
-# Set this to true to only activate OreBroadcast in listed worlds.
+# Set this to true to only activate MineBroadcast in listed worlds.
 active-per-worlds: false
 
-# List of worlds where OreBroadcast is active.
+# List of worlds where MineBroadcast is active.
 # This has no effect if `active-per-world` is set to false!
 #active-worlds:
 #    - world
@@ -55,28 +168,13 @@ active-per-worlds: false
 
 # Max size of a vein. If the size is greater, the vein is ignored, preventing server from freezing
 # (i.e. if mining a big structure made of a block to broadcast).
-max-vein-size: 500
+max-vein-size: 100
 
 # Block placed in creative will be broadcasted when a player not in creative break them.
 broadcast-creative-placed-blocks: true
 
 # Displays the time the block break handler take in the console.
 timing-debug: false
-
-# Activates metrics. Metrics is a stat utility allowing the developper to get informations
-# about the server running the plugin.
-# This sends java version, plugin version, player count, etc.
-# This DOESN'T send names, chat, list of operators, ips, etc.
-metrics: true
-
-# Activate updater functionnalities (Checks curse api to see if a new update is available)
-updater:
-
-    # Check if a new version is available at startup
-    startup-check: true
-
-    # Warn ops when they connect if a new version is available
-    warn-ops: true
 
 # Colors and color codes available :
 # Use the colors for the ore list and the color codes for the message

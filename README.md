@@ -1,33 +1,23 @@
-# OreBroadcast
+# MineBroadcast
 
-![Preview](img/logo-ore-broadcast.png)
+MineBroadcast is a fork of OreBroadcast which aims to provide more advanced x-ray detection and cleaner config.
 
-## English
+## Description
 
-### Description
+Allows server staff to receive messages when certain blocks are broken. These messages are also logged to console.
 
-Broadcast a message to the server when you find ores.
+## Commands
 
-### Commands
+- `/mb reload`: Reload config from file
+- `/mb optout`: Stop receiving MineBroadcast messages
+- `/mb optin`: Receive MineBroadcast messages
 
-+ /ob reload : Reload config from file
+## Permissions
 
-### Download
+- `mb.receive`: Receive MineBroadcast messages
+- `mb.broadcast`: Send MineBroadcast messages
+- `mb.commands.optout`: Required to use optout command
+- `mb.commands.optin`: Required to use optin command
+- `mb.commands.reload`: Required to use the reload command
 
-Automatic builds are available here : [https://drone.io/github.com/bendem/OreBroadcast/files](https://drone.io/github.com/bendem/OreBroadcast/files)
-
-## Français
-
-### Description
-
-Broadcast un message à tout le serveur quand vous trouvez des minerais.
-
-### Commandes
-
-+ /ob reload : Recharge la config depuis le fichier
-
-### Téléchargement
-
-Les builds seront disponible ici : [https://drone.io/github.com/bendem/OreBroadcast/files](https://drone.io/github.com/bendem/OreBroadcast/files)
-
-![Preview](img/preview.jpg)
+![Preview](img/mb-preview.png)

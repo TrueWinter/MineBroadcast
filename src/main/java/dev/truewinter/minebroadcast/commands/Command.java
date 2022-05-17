@@ -1,4 +1,4 @@
-package be.bendem.bukkit.orebroadcast.commands;
+package dev.truewinter.minebroadcast.commands;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.CommandSender;

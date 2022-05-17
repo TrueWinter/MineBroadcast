@@ -1,48 +1,57 @@
-name: ${pom.name}
-main: be.bendem.bukkit.orebroadcast.OreBroadcast
-version: ${pom.version}
-author: bendem
-description: Send messages to other players when you find ores.
-website: ${pom.url}
+name: MineBroadcast
+main: dev.truewinter.minebroadcast.MineBroadcast
+version: ${project.version}
+author: TrueWinter
+description: Send messages to staff when players mine blocks. This is a fork of bendem's OreBroadcast
+api-version: 1.18
 
 commands:
-    ob:
+    mb:
         usage: |
-            OreBroadcast command. Type '/ob help' for more informations
-        description: OreBroadcast commands
+            MineBroadcast command. Type '/mb help' for more informations
+        description: MineBroadcast commands
 
 permissions:
-    ob.*:
-        description: Give access to all OreBroadcast functionalities
+    mb.*:
+        description: Give access to all MineBroadcast functionalities
+        default: op
         children:
-            ob.commands.*: true
-            ob.broadcast: true
-            ob.receive: true
-            ob.update.notification: true
-    ob.commands.*:
+            mb.commands.*: true
+            mb.broadcast: true
+            mb.receive: true
+    mb.commands.*:
         description: Give access to all the plugin commands
+        default: op
         children:
-            ob.commands.reload: true
-            ob.commands.clear: true
-            ob.commands.update: true
-    ob.commands.reload:
+            mb.commands.reload: true
+            mb.commands.clear: true
+    mb.commands.reload:
         description: Players with this permission can reload the config
         default: op
-    ob.commands.clear:
+    mb.commands.clear:
         description: Players with this permission can clear the blacklist
         default: op
-    ob.commands.update:
-        description: Players with this permission can check and download updates
-        default: op
-    ob.commands.optout:
+    mb.commands.optout:
         description: Players with this permission can opt out from the plugin broadcasts
+        default: op
+    mb.commands.optin:
+        description: Players with this permission can opt in to the plugin broadcasts
+        default: op
+    mb.commands.statistics:
+        description: Get mining statistics for a player
+        default: op
+    mb.commands.startstats:
+        description: Starts the StatisticsSaver for a player. Use the StatisticsSaver only when needed.
+        default: op
+    mb.commands.stopstats:
+        description: Stops the StatisticsSaver for a player
+        default: op
+    mb.commands.resetplayer:
+        description: Resets PlayerMiningStatistics/MiningMonitor for this player
+        default: op
+    mb.broadcast:
+        description: Players with this permission will send messages when they mine blocks.
         default: true
-    ob.broadcast:
-        description: Players with this permission will send messages when they find ores.
-        default: true
-    ob.receive:
-        description: Players with this permission will receive OreBroadcast messages.
-        default: true
-    ob.update.notification:
-        description: Will receive a notification on startup if an update is available
+    mb.receive:
+        description: Players with this permission will receive MineBroadcast messages.
         default: op

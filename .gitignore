@@ -11,3 +11,4 @@ build_log.txt
 *.ai
 *.iml
 .idea/
+out/

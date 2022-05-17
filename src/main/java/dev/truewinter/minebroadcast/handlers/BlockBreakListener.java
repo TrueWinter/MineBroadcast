@@ -1,11 +1,10 @@
-package be.bendem.bukkit.orebroadcast.handlers;
+package dev.truewinter.minebroadcast.handlers;
 
-import be.bendem.bukkit.orebroadcast.OreBroadcast;
-import be.bendem.bukkit.orebroadcast.OreBroadcastEvent;
-import be.bendem.bukkit.orebroadcast.OreBroadcastException;
+import dev.truewinter.minebroadcast.MineBroadcast;
+import dev.truewinter.minebroadcast.MineBroadcastEvent;
+import dev.truewinter.minebroadcast.MineBroadcastException;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,13 +13,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
+/**
+ * @author bendem
+ * @author TrueWinter
+ */
 public class BlockBreakListener implements Listener {
 
-    private final OreBroadcast plugin;
+    private final MineBroadcast plugin;
 
-    public BlockBreakListener(OreBroadcast plugin) {
+    public BlockBreakListener(MineBroadcast plugin) {
         this.plugin = plugin;
     }
 
@@ -29,20 +33,28 @@ public class BlockBreakListener implements Listener {
         Player player = event.getPlayer();
         // Reject
         // + creative users
-        // + users without ob.broadcast permission
+        // + users without mb.broadcast permission
         // + users in a non whitelisted world
         if(player.getGameMode() != GameMode.SURVIVAL
-                || !player.hasPermission("ob.broadcast")
+                || !player.hasPermission("mb.broadcast")
                 || !plugin.isWorldWhitelisted(player.getWorld().getName())) {
             return;
         }
 
         Block block = event.getBlock();
+
+        plugin.getMiningMonitor().initPlayerMiningStatistics(player);
+        plugin.getMiningMonitor().getPlayerMiningStatistics(player).getMiningTurnMonitor()
+                .setLastBlockPos(block.getX(), block.getY(), block.getZ());
+        plugin.getMiningMonitor().getPlayerMiningStatistics(player).getStatisticsSaver()
+                .addMinedBlock(block);
+
         // Don't broadcast blacklisted blocks
         if(plugin.isBlackListed(block)) {
             plugin.unBlackList(block);
             return;
         }
+
         if(!plugin.isWhitelisted(block.getType())) {
             return;
         }
@@ -59,13 +71,13 @@ public class BlockBreakListener implements Listener {
         // Get recipients
         Set<Player> recipients = new HashSet<>();
         for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
-            if(onlinePlayer.hasPermission("ob.receive") && !plugin.isOptOut(onlinePlayer)) {
+            if(onlinePlayer.hasPermission("mb.receive") && !plugin.isOptOut(onlinePlayer)) {
                 recipients.add(onlinePlayer);
             }
         }
 
-        OreBroadcastEvent e = new OreBroadcastEvent(
-            plugin.getConfig().getString("message", "{player} just found {count} block{plural} of {ore}"),
+        MineBroadcastEvent e = new MineBroadcastEvent(
+            plugin.getConfig().getString("message", "{player} just found {count} block{plural} of {block}"),
             player,
             block,
             recipients,
@@ -81,13 +93,10 @@ public class BlockBreakListener implements Listener {
         plugin.unBlackList(e.getBlockMined());
 
         String blockName;
-        if(e.getBlockMined().getType() == Material.GLOWING_REDSTONE_ORE) {
-            blockName = "redstone";
-        } else {
-            blockName = e.getBlockMined().getType().name().toLowerCase().replace("_ore", "");
-        }
+        blockName = e.getBlockMined().getType().name().toLowerCase();
 
-        String color = plugin.getConfig().getString("colors." + blockName, "white").toUpperCase();
+        //String color = plugin.getConfig().getString("colors." + blockName, "white").toUpperCase();
+        String color = plugin.getMonitoredBlock(blockName.toUpperCase()).getColor().toUpperCase();
         String formattedMessage = format(
             e.getFormat(),
             e.getSource(),
@@ -97,6 +106,8 @@ public class BlockBreakListener implements Listener {
             e.getVein().size() > 1
         );
         broadcast(e.getRecipients(), formattedMessage);
+        plugin.getLogger().info(formattedMessage);
+        plugin.getMiningMonitor().addBlockCount(player, block, e.getVein().size());
 
         if(plugin.getConfig().getBoolean("timing-debug", false)) {
             plugin.getLogger().info("Event duration : " + (System.currentTimeMillis() - timer) + "ms");
@@ -108,15 +119,15 @@ public class BlockBreakListener implements Listener {
         vein.add(block);
         try {
             getVein(block, vein);
-        } catch(OreBroadcastException e) {
+        } catch(MineBroadcastException e) {
             return null;
         }
         return vein;
     }
 
-    private void getVein(Block block, Set<Block> vein) throws OreBroadcastException {
-        if(vein.size() > plugin.getConfig().getInt("max-vein-size", 500)) {
-            throw new OreBroadcastException();
+    private void getVein(Block block, Set<Block> vein) throws MineBroadcastException {
+        if(vein.size() > plugin.getConfig().getInt("max-vein-size", 100)) {
+            throw new MineBroadcastException();
         }
 
         int i, j, k;
@@ -136,11 +147,9 @@ public class BlockBreakListener implements Listener {
         }
     }
 
-    // Workaround for redstone ores
+    // Workaround for redstone ores, probably no longer needed
     private boolean equals(Block block1, Block block2) {
-        return block1.getType().equals(block2.getType())
-            || block1.getType() == Material.GLOWING_REDSTONE_ORE && block2.getType() == Material.REDSTONE_ORE
-            || block1.getType() == Material.REDSTONE_ORE && block2.getType() == Material.GLOWING_REDSTONE_ORE;
+        return block1.getType().equals(block2.getType());
     }
 
     private void broadcast(Set<Player> recipients, String message) {
@@ -149,21 +158,21 @@ public class BlockBreakListener implements Listener {
         }
     }
 
-    private String format(String msg, Player player, int count, String ore, String color, boolean plural) {
+    private String format(String msg, Player player, int count, String block, String color, boolean plural) {
         return ChatColor.translateAlternateColorCodes('&', msg
             .replace("{player_name}", player.getDisplayName())
             .replace("{real_player_name}", player.getName())
             .replace("{world}", player.getWorld().getName())
             .replace("{count}", String.valueOf(count))
-            .replace("{ore}", translateOre(ore, color))
-            .replace("{ore_color}", "&" + ChatColor.valueOf(color).getChar())
+            .replace("{block}", translateBlock(block, color))
+            .replace("{block_color}", "&" + ChatColor.valueOf(color).getChar())
             .replace("{plural}", plural ? plugin.getConfig().getString("plural", "s") : "")
         );
     }
 
-    private String translateOre(String ore, String color) {
+    private String translateBlock(String block, String color) {
         return "&" + ChatColor.valueOf(color).getChar()
-            + plugin.getConfig().getString("ore-translations." + ore, ore);
+            + plugin.getMonitoredBlock(block).getName();
     }
 
 }

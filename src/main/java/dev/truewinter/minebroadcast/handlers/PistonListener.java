@@ -1,7 +1,7 @@
-package be.bendem.bukkit.orebroadcast.handlers;
+package dev.truewinter.minebroadcast.handlers;
 
-import be.bendem.bukkit.orebroadcast.OreBroadcast;
-import be.bendem.bukkit.orebroadcast.SafeBlock;
+import dev.truewinter.minebroadcast.MineBroadcast;
+import dev.truewinter.minebroadcast.SafeBlock;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,13 +19,15 @@ import java.util.Map;
  * change block position and retrigger a broadcast
  *
  * @author bendem
+ * @author TrueWinter
  */
+// TODO: Look into this further and determine whether it's actually needed
 public class PistonListener implements Listener {
 
-    private final OreBroadcast plugin;
+    private final MineBroadcast plugin;
     private final PistonUtil pistonUtil;
 
-    public PistonListener(OreBroadcast plugin) {
+    public PistonListener(MineBroadcast plugin) {
         this.plugin = plugin;
         pistonUtil = new PistonUtil();
     }
@@ -38,7 +41,10 @@ public class PistonListener implements Listener {
         pistonUtil.retract(e.getBlock());
         // Workaround end
 
-        Block blockMoving = e.getRetractLocation().getBlock();
+        List<Block> blocksMoving = e.getBlocks();
+        if (blocksMoving.size() == 0) return;
+
+        Block blockMoving = blocksMoving.get(0);
         if(!e.isSticky() || !plugin.isWhitelisted(blockMoving.getType()) || !plugin.isWorldWhitelisted(e.getBlock().getWorld())) {
             return;
         }
@@ -73,7 +79,7 @@ public class PistonListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPistonBreak(BlockBreakEvent e) {
-        if(e.getBlock().getType() == Material.PISTON_BASE || e.getBlock().getType() == Material.PISTON_STICKY_BASE) {
+        if(e.getBlock().getType() == Material.PISTON) {
             pistonUtil.remove(e.getBlock());
         }
     }

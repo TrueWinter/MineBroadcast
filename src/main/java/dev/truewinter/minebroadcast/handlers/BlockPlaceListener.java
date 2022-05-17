@@ -1,17 +1,20 @@
-package be.bendem.bukkit.orebroadcast.handlers;
+package dev.truewinter.minebroadcast.handlers;
 
-import be.bendem.bukkit.orebroadcast.OreBroadcast;
+import dev.truewinter.minebroadcast.MineBroadcast;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+/**
+ * @author bendem
+ */
 public class BlockPlaceListener implements Listener {
 
-    private final OreBroadcast plugin;
+    private final MineBroadcast plugin;
 
-    public BlockPlaceListener(OreBroadcast plugin) {
+    public BlockPlaceListener(MineBroadcast plugin) {
         this.plugin = plugin;
     }
 

@@ -1,4 +1,4 @@
-package be.bendem.bukkit.orebroadcast;
+package dev.truewinter.minebroadcast;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;

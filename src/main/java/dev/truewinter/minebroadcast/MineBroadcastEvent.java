@@ -1,4 +1,4 @@
-package be.bendem.bukkit.orebroadcast;
+package dev.truewinter.minebroadcast;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -9,11 +9,12 @@ import org.bukkit.event.HandlerList;
 import java.util.Set;
 
 /**
- * Broadcast event for OreBroadcast messages.
+ * Broadcast event for MineBroadcast messages.
  *
  * @author cnaude
+ * @author TrueWinter
  */
-public class OreBroadcastEvent extends Event implements Cancellable {
+public class MineBroadcastEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -25,7 +26,7 @@ public class OreBroadcastEvent extends Event implements Cancellable {
     private boolean cancelled = false;
 
     /**
-     * Broadcast event for OreBroadcast messages.
+     * Broadcast event for MineBroadcast messages.
      *
      * @param format the format of the message
      * @param source the player that mined the block
@@ -33,7 +34,7 @@ public class OreBroadcastEvent extends Event implements Cancellable {
      * @param recipients the players that will receive this format
      * @param vein the complete vein containing the block mined
      */
-    public OreBroadcastEvent(String format, Player source, Block blockMined, Set<Player> recipients, Set<Block> vein) {
+    public MineBroadcastEvent(String format, Player source, Block blockMined, Set<Player> recipients, Set<Block> vein) {
         this.format = format;
         this.source = source;
         this.blockMined = blockMined;
@@ -49,8 +50,8 @@ public class OreBroadcastEvent extends Event implements Cancellable {
      * <li>{real_player_name}</li>
      * <li>{world}</li>
      * <li>{count}</li>
-     * <li>{ore}</li>
-     * <li>{ore_color}</li>
+     * <li>{block}</li>
+     * <li>{block_color}</li>
      * <li>{plural}</li>
      * </ul>
      *
@@ -123,7 +124,7 @@ public class OreBroadcastEvent extends Event implements Cancellable {
      * Sets the cancellation state of the event
      * (If you cancel the event, the blocks of the vein will be broadcasted
      * next time a block of the vein is broken)
-     * See {@link OreBroadcast#blackList(Block)} to blacklist blocks
+     * See {@link MineBroadcast#blackList(Block)} to blacklist blocks
      * independently.
      *
      * @param cancel the new cancellation state
